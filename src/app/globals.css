@@ -1,0 +1,161 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+Previously, there was an @import "tailwindcss"; here.
+It's generally recommended to use the @tailwind directives directly.
+If issues persist, we might need to revisit the postcss.config.mjs or tailwind.config.ts
+*/
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  /* Classic Mac OS did not have a dark mode, so we'll primarily use light theme values */
+  /* Forcing light theme for now, can be made dynamic later if desired */
+  --classic-bg: #008080; /* Teal desktop */
+  --classic-window-bg: #c0c0c0; /* Classic gray */
+  --classic-window-title-bg: #000080; /* Classic blue title bar */
+  --classic-text: #000000;
+  --classic-text-inverted: #ffffff;
+  --classic-border-light: #ffffff;
+  --classic-border-dark: #000000;
+}
+
+/*
+ The @theme inline block was causing issues. 
+ It might be a feature of a newer Next.js or Tailwind version that's not fully configured.
+ For simplicity and to ensure basic styles work, I'm commenting it out.
+ We can re-evaluate if specific theming features are needed later.
+*/
+/*
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+*/
+
+/*
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a; 
+    --foreground: #ededed;
+  }
+}
+*/
+
+@layer base {
+  body {
+    background-color: var(--classic-bg);
+    color: var(--classic-text);
+    font-family: "Chicago", "Geneva", "Arial", sans-serif; /* Classic Mac font */
+    font-smooth: never;
+    -webkit-font-smoothing: none;
+    image-rendering: pixelated; /* For sharp, pixelated icons/images */
+  }
+
+  /* Basic window styling */
+  .window {
+    background-color: var(--classic-window-bg);
+    border-top: 2px solid var(--classic-border-light);
+    border-left: 2px solid var(--classic-border-light);
+    border-right: 2px solid var(--classic-border-dark);
+    border-bottom: 2px solid var(--classic-border-dark);
+    box-shadow: 2px 2px 0px var(--classic-border-dark);
+  }
+
+  .window-title-bar {
+    background-color: var(--classic-window-title-bg);
+    color: var(--classic-text-inverted);
+    padding: 2px 4px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 20px; /* Approximate classic title bar height */
+    cursor: default; /* Default cursor for title bar (draggable handle) */
+  }
+
+  .window-title-bar-stripe {
+    /* This creates the pinstripe effect on active windows in Classic Mac OS */
+    /* For simplicity, we'll make it always visible for now */
+    /* In a more advanced version, this would only show on the active window */
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 1px,
+      var(--classic-window-bg) 1px, /* Use window background for stripes */
+      var(--classic-window-bg) 2px
+    );
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.3; /* Make stripes subtle */
+    pointer-events: none; /* Allow clicks to pass through */
+  }
+
+  .window-title-text {
+    position: relative; /* Ensure text is above the stripes */
+    z-index: 1;
+  }
+
+  .window-close-button {
+    position: relative; /* Ensure button is above the stripes */
+    z-index: 1;
+    /* The mac-button class will provide most styling */
+    /* Specific adjustments for the tiny close box: */
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0; /* Override mac-button padding */
+    margin-right: 2px; /* Spacing from edge of title bar */
+  }
+
+  .window-close-box {
+    width: 6px;
+    height: 6px;
+    border: 1px solid var(--classic-text); /* Black border for the box */
+  }
+
+  .window-content {
+    padding: 10px;
+    /* Ensure content area respects title bar height */
+    height: calc(100% - 20px); 
+    overflow: auto; /* Add scrollbars if content overflows */
+  }
+
+  /* Classic button styling */
+  .mac-button {
+    background-color: var(--classic-window-bg);
+    border-top: 1px solid var(--classic-border-light);
+    border-left: 1px solid var(--classic-border-light);
+    border-right: 1px solid var(--classic-border-dark);
+    border-bottom: 1px solid var(--classic-border-dark);
+    padding: 2px 8px;
+    box-shadow: 1px 1px 0px var(--classic-border-dark);
+    user-select: none;
+    cursor: default;
+    font-size: 12px; /* Approximate classic font size */
+  }
+
+  .mac-button:active {
+    background-color: #a0a0a0; /* Slightly darker gray when pressed */
+    border-top: 1px solid var(--classic-border-dark);
+    border-left: 1px solid var(--classic-border-dark);
+    border-right: 1px solid var(--classic-border-light);
+    border-bottom: 1px solid var(--classic-border-light);
+    box-shadow: none;
+    transform: translate(1px, 1px);
+  }
+}
+
+/* Remove default browser focus outline and use custom if needed */
+*:focus {
+  outline: none;
+}
