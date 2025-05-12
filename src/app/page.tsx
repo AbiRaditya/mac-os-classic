@@ -14,26 +14,27 @@ interface WindowState {
   initialHeight: number;
   zIndex: number;
   isResizable?: boolean; // Added optional isResizable property
+  rounded?: boolean; // Added optional rounded property
 }
 
 const initialWindows: WindowState[] = [
-  {
-    id: "welcome",
-    title: "Welcome to Mac OS Classic",
-    content: (
-      <>
-        <p className="mb-2">
-          Welcome to this Next.js Mac OS Classic recreation!
-        </p>
-        <p className="mb-2">You can drag this window by its title bar.</p>
-        {/* Button to open another window will be handled by a function */}
-      </>
-    ),
-    initialPosition: { x: 50, y: 30 },
-    initialWidth: 380,
-    initialHeight: 150,
-    zIndex: 2,
-  },
+  // {
+  //   id: "welcome",
+  //   title: "Welcome to Mac OS Classic",
+  //   content: (
+  //     <>
+  //       <p className="mb-2">
+  //         Welcome to this Next.js Mac OS Classic recreation!
+  //       </p>
+  //       <p className="mb-2">You can drag this window by its title bar.</p>
+  //       {/* Button to open another window will be handled by a function */}
+  //     </>
+  //   ),
+  //   initialPosition: { x: 50, y: 30 },
+  //   initialWidth: 380,
+  //   initialHeight: 150,
+  //   zIndex: 2,
+  // },
 ];
 
 let windowCounter = 0;
@@ -99,10 +100,42 @@ export default function HomePage() {
         x: 150 + windowCounter * 10,
         y: 120 + windowCounter * 10,
       },
-      initialWidth: 194, // Adjusted for calculator size + padding
-      initialHeight: 280, // Adjusted for calculator size + padding + title bar
+      initialWidth: 215, // Adjusted for calculator size + padding
+      initialHeight: 310, // Adjusted for calculator size + padding + title bar
       zIndex: windows.length + 1,
       isResizable: false, // Added to disable resizing for calculator
+      rounded: true, // Added to make the calculator window rounded
+    };
+    setWindows((prevWindows) => [...prevWindows, newWindow]);
+    bringToFront(newWindow.id);
+  }, [windows, bringToFront]);
+
+  const openResumeWindow = useCallback(() => {
+    const existingResumeWindow = windows.find((win) => win.title === "Resume");
+
+    if (existingResumeWindow) {
+      bringToFront(existingResumeWindow.id);
+      return;
+    }
+
+    windowCounter++;
+    const resumeWindowId = `resume-${windowCounter}`;
+    const newWindow: WindowState = {
+      id: resumeWindowId,
+      title: "Resume",
+      content: (
+        <div className="p-4 flex justify-center items-center h-full">
+          <h1 className="text-2xl font-bold">Abi Raditya Putra Falaki</h1>
+        </div>
+      ),
+      initialPosition: {
+        x: 180 + windowCounter * 10,
+        y: 140 + windowCounter * 10,
+      },
+      initialWidth: 350,
+      initialHeight: 200,
+      zIndex: windows.length + 1,
+      isResizable: true,
     };
     setWindows((prevWindows) => [...prevWindows, newWindow]);
     bringToFront(newWindow.id);
@@ -141,6 +174,9 @@ export default function HomePage() {
     if (menuTitle === "Special" && itemTitle === "Calculator") {
       openCalculatorWindow();
     }
+    if (menuTitle === "Special" && itemTitle === "Resume") {
+      openResumeWindow();
+    }
     // Handle other menu item actions here
   };
 
@@ -151,6 +187,9 @@ export default function HomePage() {
       setClickTimeout(null);
       if (iconId === "calculator-icon") {
         openCalculatorWindow();
+      }
+      if (iconId === "resume-icon") {
+        openResumeWindow();
       }
       setSelectedIconId(null); // Deselect after opening
     } else {
@@ -196,25 +235,25 @@ export default function HomePage() {
           isResizable={win.isResizable !== undefined ? win.isResizable : true} // Pass isResizable prop
           minWidth={win.title === "Calculator" ? 194 : undefined} // Optional: set minWidth for calc if needed
           minHeight={win.title === "Calculator" ? 280 : undefined} // Optional: set minHeight for calc if needed
+          rounded={win.rounded} // Pass rounded prop from WindowState
         >
           {win.id === "welcome" ? welcomeWindowContent : win.content}
         </WindowComponent>
       ))}
-      {/* Desktop Icons could be added here */}
+      {/* Calculator Icon */}
       <div
-        id="calculator-icon" // Added id for selection
+        id="calculator-icon"
         className={`absolute top-10 left-10 flex flex-col items-center cursor-default group ${
           selectedIconId === "calculator-icon" ? "selected-icon" : ""
-        }`} // Use cursor-default, and add selected-icon class
+        }`}
         onClick={(e) => {
-          e.stopPropagation(); // Prevent desktop click from deselecting immediately
+          e.stopPropagation();
           handleIconClick("calculator-icon");
         }}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
-            // Keep Enter/Space as single action to open for accessibility
             openCalculatorWindow();
             setSelectedIconId(null);
           }
@@ -228,16 +267,43 @@ export default function HomePage() {
             selectedIconId === "calculator-icon"
               ? "bg-blue-700 bg-opacity-75"
               : "bg-black bg-opacity-50"
-          }`} // Style for selected icon text
+          }`}
         >
           Calculator
         </span>
       </div>
-      {/* Example: */}
-      {/* <div className="absolute top-10 left-10 flex flex-col items-center cursor-pointer"> */}
-      {/*   <img src="/file.svg" alt="File Icon" width={32} height={32} /> */}
-      {/*   <span className="text-xs mt-1 text-white">My File.txt</span> */}
-      {/* </div> */}
+      {/* Resume Icon */}
+      <div
+        id="resume-icon"
+        className={`absolute top-10 left-24 flex flex-col items-center cursor-default group ${
+          selectedIconId === "resume-icon" ? "selected-icon" : ""
+        }`}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleIconClick("resume-icon");
+        }}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            openResumeWindow();
+            setSelectedIconId(null);
+          }
+        }}
+        aria-label="Open Resume"
+        aria-selected={selectedIconId === "resume-icon"}
+      >
+        <img src="/file.svg" alt="Resume Icon" width={32} height={32} />
+        <span
+          className={`text-xs mt-1 text-white rounded-sm px-1 group-focus:ring-2 group-focus:ring-blue-500 group-hover:bg-opacity-75 ${
+            selectedIconId === "resume-icon"
+              ? "bg-blue-700 bg-opacity-75"
+              : "bg-black bg-opacity-50"
+          }`}
+        >
+          Resume
+        </span>
+      </div>
     </main>
   );
 }

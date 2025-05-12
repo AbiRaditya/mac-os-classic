@@ -7,7 +7,7 @@ const menuData: Record<string, string[]> = {
   File: ["New", "Open", "Close", "Save", "Quit"],
   Edit: ["Undo", "Cut", "Copy", "Paste", "Clear"],
   View: ["Icons", "List", "Details"],
-  Special: ["Calculator", "Empty Trash", "Restart", "Shut Down"], // Added Calculator
+  Special: ["Calculator", "Resume", "Empty Trash", "Restart", "Shut Down"], // Added Resume
 };
 
 interface MenuBarProps {
@@ -72,7 +72,7 @@ const MenuBar: React.FC<MenuBarProps> = ({ onMenuItemClick }) => {
     >
       <div className="mx-2 font-normal text-base menubar-font">
         <img
-          src="/icons/apple-logo.png"
+          src="/icons/banana-logo.png"
           alt=""
           className="w-5 h-5" // Adjusted size for the logo
         />
