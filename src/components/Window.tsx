@@ -1,7 +1,8 @@
-'use client';
+"use client";
 
-import React, { useState, useRef } from 'react';
-import Draggable from 'react-draggable';
+import React, { useState, useRef } from "react";
+import Draggable from "react-draggable";
+import { Resizable } from "re-resizable";
 
 interface WindowProps {
   title: string;
@@ -12,6 +13,9 @@ interface WindowProps {
   onClose?: () => void;
   zIndex?: number;
   onFocus?: () => void;
+  isResizable?: boolean;
+  minWidth?: number;
+  minHeight?: number;
 }
 
 const WindowComponent: React.FC<WindowProps> = ({
@@ -23,47 +27,94 @@ const WindowComponent: React.FC<WindowProps> = ({
   onClose,
   zIndex,
   onFocus,
+  isResizable = true,
+  minWidth = 150,
+  minHeight = 100,
 }) => {
-  const [position, setPosition] = useState(initialPosition);
-  const nodeRef = useRef<HTMLDivElement>(null);
+  const [size, setSize] = useState({
+    width: initialWidth,
+    height: initialHeight,
+  });
+  const draggableNodeRef = useRef<HTMLDivElement>(null);
+
+  const handleStyle = {
+    width: "10px",
+    height: "10px",
+    bottom: "-5px",
+    right: "-5px",
+    cursor: "nwse-resize",
+    backgroundColor: "var(--classic-window-title-bg)",
+    border: "1px solid var(--classic-border-dark)",
+    borderRadius: "2px",
+    zIndex: 10, // Ensure handle is clickable
+  };
 
   return (
     <Draggable
       handle=".window-title-bar"
-      defaultPosition={position}
-      onStop={(e, data) => setPosition({ x: data.x, y: data.y })}
-      nodeRef={nodeRef}
+      defaultPosition={initialPosition}
+      nodeRef={draggableNodeRef as React.RefObject<HTMLElement>} // Applied type assertion here
       bounds="parent"
+      onStart={onFocus} // Changed from onMouseDown and onTouchStart to onStart
     >
       <div
-        ref={nodeRef}
-        className="window absolute flex flex-col"
+        ref={draggableNodeRef}
+        className="window absolute flex flex-col" // Removed overflow-hidden here, Resizable's child will handle it
         style={{
-          width: initialWidth,
-          height: initialHeight,
+          width: size.width,
+          height: size.height,
           zIndex: zIndex,
+          // Position is set by Draggable
         }}
-        onMouseDown={onFocus}
-        onTouchStart={onFocus}
+        // onMouseDown and onTouchStart are moved to Draggable for better focus handling
       >
-        <div className="window-title-bar relative flex-shrink-0">
-          <span className="window-title-text truncate ml-1">{title}</span>
-          {onClose && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onClose();
-              }}
-              className="mac-button window-close-button"
-              aria-label="Close"
-            >
-              <div className="window-close-box"></div>
-            </button>
-          )}
-        </div>
-        <div className="window-content flex-grow">
-          {children}
-        </div>
+        <Resizable
+          size={{ width: size.width, height: size.height }}
+          minWidth={minWidth}
+          minHeight={minHeight}
+          onResizeStop={(e, direction, ref, d) => {
+            setSize((prevSize) => ({
+              width: prevSize.width + d.width,
+              height: prevSize.height + d.height,
+            }));
+            if (onFocus) onFocus(); // Call onFocus after resize
+          }}
+          enable={{
+            top: false,
+            right: false,
+            bottom: false,
+            left: false,
+            topRight: false,
+            bottomRight: isResizable,
+            bottomLeft: false,
+            topLeft: false,
+          }}
+          handleStyles={{ bottomRight: handleStyle }}
+          handleClasses={{ bottomRight: "resize-handle-bottom-right" }}
+          style={{ width: "100%", height: "100%" }}
+          // Apply flex and overflow to the div rendered by Resizable
+          className="flex flex-col overflow-hidden"
+        >
+          {/* Children of Resizable */}
+          <div className="window-title-bar relative flex-shrink-0">
+            <span className="window-title-text truncate ml-1">{title}</span>
+            {onClose && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent drag/resize interference
+                  onClose();
+                }}
+                className="mac-button window-close-button"
+                aria-label="Close"
+              >
+                <div className="window-close-box"></div>
+              </button>
+            )}
+          </div>
+          <div className="window-content flex-grow overflow-auto">
+            {children}
+          </div>
+        </Resizable>
       </div>
     </Draggable>
   );
