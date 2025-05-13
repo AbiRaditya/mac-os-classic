@@ -117,13 +117,13 @@ const Calculator: React.FC = () => {
   };
 
   const buttonClass =
-    "mac-button text-black text-lg w-10 h-10 flex items-center justify-center m-0.5 focus:outline-none active:bg-neutral-400";
+    "mac-button text-black bg-white text-lg w-10 h-10 flex items-center justify-center m-0.5 focus:outline-none active:bg-neutral-400 !shadow-[5px_3px_0px_var(--classic-border-dark)]";
   const zeroButtonClass = buttonClass + " w-auto";
-  const operatorButtonClass = buttonClass + " bg-neutral-300";
-  const functionButtonClass = buttonClass + " bg-neutral-300"; // For C, +/-, %
+  const operatorButtonClass = buttonClass + " bg-white";
+  const functionButtonClass = buttonClass + " bg-white"; // For C, +/-, %
 
   return (
-    <div className="bg-neutral-200 p-2 border border-black shadow-md w-[188px] select-none">
+    <div className="bg-[#b4b8dd] p-2 border border-black shadow-md w-full select-none window-content flex-grow overflow-auto">
       {/* Display */}
       <div className="bg-white text-right h-8 mb-2 p-1 border-2 border-neutral-400 text-xl font-mono overflow-hidden">
         {display}
@@ -132,7 +132,7 @@ const Calculator: React.FC = () => {
       {/* Buttons */}
       <div className="grid grid-cols-4 gap-0.5">
         <button onClick={clearDisplay} className={`${functionButtonClass}`}>
-          AC
+          C
         </button>{" "}
         {/* Changed C to AC for All Clear */}
         <button onClick={toggleSign} className={functionButtonClass}>
@@ -160,7 +160,7 @@ const Calculator: React.FC = () => {
           onClick={() => performOperation("*")}
           className={operatorButtonClass}
         >
-          ×
+          *
         </button>
         <button onClick={() => inputDigit("4")} className={buttonClass}>
           4
@@ -175,7 +175,7 @@ const Calculator: React.FC = () => {
           onClick={() => performOperation("-")}
           className={operatorButtonClass}
         >
-          −
+          -
         </button>
         <button onClick={() => inputDigit("1")} className={buttonClass}>
           1

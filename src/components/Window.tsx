@@ -16,6 +16,7 @@ interface WindowProps {
   isResizable?: boolean;
   minWidth?: number;
   minHeight?: number;
+  rounded?: boolean; // Added rounded prop
 }
 
 const WindowComponent: React.FC<WindowProps> = ({
@@ -30,6 +31,7 @@ const WindowComponent: React.FC<WindowProps> = ({
   isResizable = true,
   minWidth = 150,
   minHeight = 100,
+  rounded = false, // Added rounded prop with default value
 }) => {
   const [size, setSize] = useState({
     width: initialWidth,
@@ -59,7 +61,9 @@ const WindowComponent: React.FC<WindowProps> = ({
     >
       <div
         ref={draggableNodeRef}
-        className="window absolute flex flex-col" // Removed overflow-hidden here, Resizable's child will handle it
+        className={`window absolute flex flex-col ${
+          rounded ? "rounded-lg overflow-hidden" : ""
+        }`}
         style={{
           width: size.width,
           height: size.height,
@@ -91,9 +95,16 @@ const WindowComponent: React.FC<WindowProps> = ({
           }}
           handleStyles={{ bottomRight: handleStyle }}
           handleClasses={{ bottomRight: "resize-handle-bottom-right" }}
-          style={{ width: "100%", height: "100%" }}
+          style={{
+            width: "100%",
+            height: "100%",
+            borderBottom: "1px dashed black",
+            borderRight: "1px dashed black",
+          }}
           // Apply flex and overflow to the div rendered by Resizable
-          className="flex flex-col overflow-hidden"
+          className={`flex flex-col overflow-hidden ${
+            rounded ? "rounded-lg" : ""
+          }`}
         >
           {/* Children of Resizable */}
           <div className="window-title-bar relative flex-shrink-0">
@@ -111,9 +122,7 @@ const WindowComponent: React.FC<WindowProps> = ({
               </button>
             )}
           </div>
-          <div className="window-content flex-grow overflow-auto">
-            {children}
-          </div>
+          {children}
         </Resizable>
       </div>
     </Draggable>
