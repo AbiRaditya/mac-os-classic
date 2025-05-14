@@ -5,6 +5,7 @@ import MenuBar from "@/components/MenuBar";
 import React, { useState, useCallback } from "react";
 import Calculator from "@/components/Calculator";
 import Image from "next/image";
+import Each from "@/components/Each"; // Import the Each component
 
 interface WindowState {
   id: string;
@@ -196,23 +197,26 @@ export default function HomePage() {
     >
       {" "}
       <MenuBar onMenuItemClick={handleMenuItemClick} />
-      {windows.map((win) => (
-        <WindowComponent
-          key={win.id}
-          isFocused={win.id === activeWindowId}
-          title={win.id === activeWindowId ? `■ ${win.title}` : win.title}
-          initialPosition={win.initialPosition}
-          initialWidth={win.initialWidth}
-          initialHeight={win.initialHeight}
-          onClose={() => closeWindow(win.id)}
-          zIndex={win.zIndex}
-          onFocus={() => bringToFront(win.id)}
-          isResizable={win.isResizable !== undefined ? win.isResizable : true}
-          rounded={win.rounded}
-        >
-          {win.id === "welcome" ? welcomeWindowContent : win.content}
-        </WindowComponent>
-      ))}
+      <Each
+        of={windows}
+        render={(win) => (
+          <WindowComponent
+            key={win.id}
+            isFocused={win.id === activeWindowId}
+            title={win.id === activeWindowId ? `■ ${win.title}` : win.title}
+            initialPosition={win.initialPosition}
+            initialWidth={win.initialWidth}
+            initialHeight={win.initialHeight}
+            onClose={() => closeWindow(win.id)}
+            zIndex={win.zIndex}
+            onFocus={() => bringToFront(win.id)}
+            isResizable={win.isResizable !== undefined ? win.isResizable : true}
+            rounded={win.rounded}
+          >
+            {win.id === "welcome" ? welcomeWindowContent : win.content}
+          </WindowComponent>
+        )}
+      />
       <div
         id="calculator-icon"
         className={`absolute top-10 left-10 flex flex-col items-center cursor-default group ${

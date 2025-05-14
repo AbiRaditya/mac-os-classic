@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
+import Show from "../Show"; // Import the Show component
 
 const menuData: Record<string, string[]> = {
   File: ["New", "Open", "Close", "Save", "Quit"],
@@ -87,7 +88,7 @@ const MenuBar: React.FC<MenuBarProps> = ({ onMenuItemClick }) => {
           }
         >
           <span className="menubar-font">{menuTitle}</span>
-          {activeMenu === menuTitle && (
+          <Show when={activeMenu === menuTitle}>
             <div
               className="absolute left-0 mt-1 w-auto min-w-[150px] bg-neutral-100 border border-neutral-400 shadow-md py-0.5 z-50 menubar-font"
               onMouseLeave={() => setActiveMenu(null)}
@@ -102,7 +103,7 @@ const MenuBar: React.FC<MenuBarProps> = ({ onMenuItemClick }) => {
                 </div>
               ))}
             </div>
-          )}
+          </Show>
         </div>
       ))}
       <div className="ml-auto flex items-center">

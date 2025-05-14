@@ -3,6 +3,7 @@
 import React, { useState, useRef } from "react";
 import Draggable from "react-draggable";
 import { Resizable } from "re-resizable";
+import Show from "./Show"; // Import the Show component
 
 interface WindowProps {
   title: string;
@@ -97,11 +98,11 @@ const WindowComponent: React.FC<WindowProps> = ({
         >
           <div className="window-title-bar flex items-center justify-between px-1 relative">
             <div className="window-title-bar-stripe"></div>
-            {onClose && (
+            <Show when={!!onClose}>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  onClose();
+                  if (onClose) onClose();
                 }}
                 className="mac-button window-close-button z-10"
                 aria-label="Close"
@@ -109,19 +110,22 @@ const WindowComponent: React.FC<WindowProps> = ({
               >
                 <div className="window-close-box"></div>
               </button>
-            )}
-            {!onClose && <div style={{ width: "14px", flexShrink: 0 }}></div>}
+            </Show>
+            <Show when={!onClose}>
+              <div style={{ width: "14px", flexShrink: 0 }}></div>
+            </Show>
 
-            <div className="window-title-text truncate z-10 text-center flex-grow"
+            <div
+              className="window-title-text truncate z-10 text-center flex-grow"
               style={{
                 color: isFocused ? "black" : "gray",
                 backgroundColor: isFocused ? "white" : "transparent",
-               }}
+              }}
             >
               {title}
             </div>
 
-            {onZoom && (
+            <Show when={!!onZoom}>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -133,8 +137,10 @@ const WindowComponent: React.FC<WindowProps> = ({
               >
                 <div className="window-zoom-box"></div>
               </button>
-            )}
-            {!onZoom && <div style={{ width: "14px", flexShrink: 0 }}></div>}
+            </Show>
+            <Show when={!onZoom}>
+              <div style={{ width: "14px", flexShrink: 0 }}></div>
+            </Show>
           </div>
 
           <div className="window-content flex-grow overflow-auto">
