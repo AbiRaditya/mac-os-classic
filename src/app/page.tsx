@@ -6,6 +6,7 @@ import React, { useState, useCallback } from "react";
 import Calculator from "@/components/Calculator";
 import Image from "next/image";
 import Each from "@/components/Each"; // Import the Each component
+import ResumeContent from "@/components/ResumeContent"; // Import the new ResumeContent component
 
 interface WindowState {
   id: string;
@@ -107,17 +108,13 @@ export default function HomePage() {
     const newWindow: WindowState = {
       id: resumeWindowId,
       title: "Resume",
-      content: (
-        <div className="p-4 flex justify-center items-center h-full">
-          <h1 className="text-2xl font-bold">Abi Raditya Putra Falaki</h1>
-        </div>
-      ),
+      content: <ResumeContent />,
       initialPosition: {
         x: 180 + windowCounter * 10,
         y: 140 + windowCounter * 10,
       },
-      initialWidth: 350,
-      initialHeight: 200,
+      initialWidth: 550, // Adjusted width for better resume display
+      initialHeight: 450, // Adjusted height for better resume display
       zIndex: windows.length + 1,
       isResizable: true,
     };
