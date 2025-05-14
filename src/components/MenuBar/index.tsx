@@ -1,13 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import React, { useState, useEffect } from "react";
 
-// Basic data structure for menu items
 const menuData: Record<string, string[]> = {
   File: ["New", "Open", "Close", "Save", "Quit"],
   Edit: ["Undo", "Cut", "Copy", "Paste", "Clear"],
   View: ["Icons", "List", "Details"],
-  Special: ["Calculator", "Resume", "Empty Trash", "Restart", "Shut Down"], // Added Resume
+  Special: ["Calculator", "Resume", "Empty Trash", "Restart", "Shut Down"],
 };
 
 interface MenuBarProps {
@@ -25,12 +25,12 @@ const MenuBar: React.FC<MenuBarProps> = ({ onMenuItemClick }) => {
       const minutes = now.getMinutes();
       const ampm = hours >= 12 ? "PM" : "AM";
       hours = hours % 12;
-      hours = hours ? hours : 12; // the hour '0' should be '12'
+      hours = hours ? hours : 12;
       const minutesStr = minutes < 10 ? "0" + minutes : minutes;
       setCurrentTime(`${hours}:${minutesStr} ${ampm}`);
     };
     updateClock();
-    const timer = setInterval(updateClock, 1000 * 30); // Update every 30s, more frequent than 1min for responsiveness
+    const timer = setInterval(updateClock, 1000 * 30);
 
     return () => clearInterval(timer);
   }, []);
@@ -40,14 +40,13 @@ const MenuBar: React.FC<MenuBarProps> = ({ onMenuItemClick }) => {
   };
 
   const handleMenuTitleMouseLeave = () => {
-    // Logic for hover-to-close menus
   };
 
   const handleItemClick = (menuTitle: string, itemTitle: string) => {
     if (onMenuItemClick) {
       onMenuItemClick(menuTitle, itemTitle);
     }
-    setActiveMenu(null); // Close menu after item click
+    setActiveMenu(null);
   };
 
   useEffect(() => {
@@ -67,14 +66,15 @@ const MenuBar: React.FC<MenuBarProps> = ({ onMenuItemClick }) => {
 
   return (
     <div
-      className="fixed top-0 left-0 right-0 h-[22px] bg-red-100 border-b border-black flex items-center px-1 shadow-sm z-50 select-none text-black menubar-font text-[11px]"
+      className="fixed top-0 left-0 right-0 h-[22px] bg-neutral-100 border-b border-black flex items-center px-1 shadow-sm z-50 select-none text-black menubar-font text-[11px]"
       onMouseLeave={handleMenuTitleMouseLeave}
     >
       <div className="mx-2 font-normal text-base menubar-font">
-        <img
+        <Image
           src="/icons/banana-logo.png"
-          alt=""
-          className="w-5 h-5" // Adjusted size for the logo
+          alt="banintosh"
+          width={24}
+          height={24}
         />
       </div>
       {Object.entries(menuData).map(([menuTitle, items]) => (

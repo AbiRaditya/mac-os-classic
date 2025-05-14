@@ -11,12 +11,14 @@ interface WindowProps {
   initialWidth?: number;
   initialHeight?: number;
   onClose?: () => void;
+  onZoom?: () => void;
   zIndex?: number;
   onFocus?: () => void;
   isResizable?: boolean;
   minWidth?: number;
   minHeight?: number;
-  rounded?: boolean; // Added rounded prop
+  rounded?: boolean;
+  isFocused?: boolean;
 }
 
 const WindowComponent: React.FC<WindowProps> = ({
@@ -26,12 +28,14 @@ const WindowComponent: React.FC<WindowProps> = ({
   initialWidth = 300,
   initialHeight = 200,
   onClose,
+  onZoom,
   zIndex,
   onFocus,
   isResizable = true,
   minWidth = 150,
   minHeight = 100,
-  rounded = false, // Added rounded prop with default value
+  rounded = false,
+  isFocused = false,
 }) => {
   const [size, setSize] = useState({
     width: initialWidth,
@@ -39,25 +43,21 @@ const WindowComponent: React.FC<WindowProps> = ({
   });
   const draggableNodeRef = useRef<HTMLDivElement>(null);
 
-  const handleStyle = {
-    width: "10px",
-    height: "10px",
-    bottom: "-5px",
-    right: "-5px",
+  const classicHandleStyle = {
+    width: "16px",
+    height: "16px",
+    bottom: "0px",
+    right: "0px",
     cursor: "nwse-resize",
-    backgroundColor: "var(--classic-window-title-bg)",
-    border: "1px solid var(--classic-border-dark)",
-    borderRadius: "2px",
-    zIndex: 10, // Ensure handle is clickable
   };
 
   return (
     <Draggable
       handle=".window-title-bar"
       defaultPosition={initialPosition}
-      nodeRef={draggableNodeRef as React.RefObject<HTMLElement>} // Applied type assertion here
+      nodeRef={draggableNodeRef as React.RefObject<HTMLElement>}
       bounds="parent"
-      onStart={onFocus} // Changed from onMouseDown and onTouchStart to onStart
+      onStart={onFocus}
     >
       <div
         ref={draggableNodeRef}
@@ -68,9 +68,7 @@ const WindowComponent: React.FC<WindowProps> = ({
           width: size.width,
           height: size.height,
           zIndex: zIndex,
-          // Position is set by Draggable
         }}
-        // onMouseDown and onTouchStart are moved to Draggable for better focus handling
       >
         <Resizable
           size={{ width: size.width, height: size.height }}
@@ -81,7 +79,7 @@ const WindowComponent: React.FC<WindowProps> = ({
               width: prevSize.width + d.width,
               height: prevSize.height + d.height,
             }));
-            if (onFocus) onFocus(); // Call onFocus after resize
+            if (onFocus) onFocus();
           }}
           enable={{
             top: false,
@@ -93,36 +91,55 @@ const WindowComponent: React.FC<WindowProps> = ({
             bottomLeft: false,
             topLeft: false,
           }}
-          handleStyles={{ bottomRight: handleStyle }}
+          handleStyles={{ bottomRight: classicHandleStyle }}
           handleClasses={{ bottomRight: "resize-handle-bottom-right" }}
-          style={{
-            width: "100%",
-            height: "100%",
-            borderBottom: "1px dashed black",
-            borderRight: "1px dashed black",
-          }}
-          // Apply flex and overflow to the div rendered by Resizable
-          className={`flex flex-col overflow-hidden ${
-            rounded ? "rounded-lg" : ""
-          }`}
+          className="flex flex-col flex-grow"
         >
-          {/* Children of Resizable */}
-          <div className="window-title-bar relative flex-shrink-0">
-            <span className="window-title-text truncate ml-1">{title}</span>
+          <div className="window-title-bar flex items-center justify-between px-1 relative">
+            <div className="window-title-bar-stripe"></div>
             {onClose && (
               <button
                 onClick={(e) => {
-                  e.stopPropagation(); // Prevent drag/resize interference
+                  e.stopPropagation();
                   onClose();
                 }}
-                className="mac-button window-close-button"
+                className="mac-button window-close-button z-10"
                 aria-label="Close"
+                style={{ marginRight: "auto" }}
               >
                 <div className="window-close-box"></div>
               </button>
             )}
+            {!onClose && <div style={{ width: "14px", flexShrink: 0 }}></div>}
+
+            <div className="window-title-text truncate z-10 text-center flex-grow"
+              style={{
+                color: isFocused ? "black" : "gray",
+                backgroundColor: isFocused ? "white" : "transparent",
+               }}
+            >
+              {title}
+            </div>
+
+            {onZoom && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onZoom) onZoom();
+                }}
+                className="mac-button window-zoom-button z-10"
+                aria-label="Zoom"
+                style={{ marginLeft: "auto" }}
+              >
+                <div className="window-zoom-box"></div>
+              </button>
+            )}
+            {!onZoom && <div style={{ width: "14px", flexShrink: 0 }}></div>}
           </div>
-          {children}
+
+          <div className="window-content flex-grow overflow-auto">
+            {children}
+          </div>
         </Resizable>
       </div>
     </Draggable>

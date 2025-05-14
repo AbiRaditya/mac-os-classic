@@ -45,7 +45,8 @@ If issues persist, we might need to revisit the postcss.config.mjs or tailwind.c
   /* Forcing light theme for now, can be made dynamic later if desired */
   --classic-bg: #008080; /* Teal desktop */
   --classic-window-bg: #c0c0c0; /* Classic gray */
-  --classic-window-title-bg: #000080; /* Classic blue title bar */
+  --classic-window-title-bg: oklch(97% 0 0); /* Very light, almost white title bar */
+  --classic-stripe-color: rgba(0, 0, 0, 0.25); /* Subtle dark stripes for the title bar */
   --classic-text: #000000;
   --classic-text-inverted: #ffffff;
   --classic-border-light: #ffffff;
@@ -101,54 +102,49 @@ If issues persist, we might need to revisit the postcss.config.mjs or tailwind.c
   }
 
   .window-title-bar {
-    background-color: var(--classic-window-title-bg);
-    color: var(--classic-text-inverted);
-    padding: 2px 4px;
+    background-color: var(--classic-window-title-bg); /* Light background for the whole bar */
+    color: var(--classic-text); /* Dark text for items in the bar */
+    padding: 0; /* Remove padding, manage spacing with flex/margins */
     font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: flex; /* Will be controlled by TSX, but good default */
+    align-items: center; /* Will be controlled by TSX */
     height: 20px; /* Approximate classic title bar height */
     cursor: default; /* Default cursor for title bar (draggable handle) */
+    position: relative; /* For stripes and absolute positioned children if any */
   }
 
   .window-title-bar-stripe {
-    /* This creates the pinstripe effect on active windows in Classic Mac OS */
-    /* For simplicity, we'll make it always visible for now */
-    /* In a more advanced version, this would only show on the active window */
     background-image: repeating-linear-gradient(
       to bottom,
       transparent,
       transparent 1px,
-      var(--classic-window-bg) 1px,
-      /* Use window background for stripes */ var(--classic-window-bg) 2px
+      var(--classic-stripe-color) 1px, /* Use new stripe color */
+      var(--classic-stripe-color) 2px
     );
     height: 100%;
     width: 100%;
     position: absolute;
     top: 0;
     left: 0;
-    opacity: 0.3; /* Make stripes subtle */
     pointer-events: none; /* Allow clicks to pass through */
+    z-index: 0; /* Ensure stripes are behind other content in the title bar */
   }
 
   .window-title-text {
-    position: relative; /* Ensure text is above the stripes */
-    z-index: 1;
+    position: relative; /* Ensure text is above the stripes if not using higher z-index from TSX */
+    z-index: 1; /* Default z-index, TSX might use higher like z-10 */
+    color: var(--classic-text); /* Ensure dark text */
+    background-color: transparent; /* No specific background, uses bar's bg */
   }
 
   .window-close-button {
-    position: relative; /* Ensure button is above the stripes */
-    z-index: 1;
-    /* The mac-button class will provide most styling */
-    /* Specific adjustments for the tiny close box: */
+    position: relative; /* Will be part of flex layout, not absolute by default in CSS */
     width: 14px;
     height: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0; /* Override mac-button padding */
-    margin-right: 2px; /* Spacing from edge of title bar */
   }
 
   .window-close-box {
@@ -160,7 +156,7 @@ If issues persist, we might need to revisit the postcss.config.mjs or tailwind.c
   .window-content {
     padding: 10px;
     /* Ensure content area respects title bar height */
-    height: calc(100% - 20px);
+    height: calc(100% - 20px); /* Adjusted to string */
     overflow: auto; /* Add scrollbars if content overflows */
   }
 
@@ -204,10 +200,52 @@ If issues persist, we might need to revisit the postcss.config.mjs or tailwind.c
   .selected-icon span {
     background-color: var(
       --classic-window-title-bg
-    ) !important; /* Use title bar blue for selected text background */
+    ) !important; /* Use title bar blue for selected text background */ /* This var is now very light gray */
     color: var(
       --classic-text-inverted
     ) !important; /* White text for selected icon */
+  }
+
+  /* Styles for the new zoom button */
+  .window-zoom-button {
+    /* Copied from .mac-button */
+    background-color: var(--classic-window-bg);
+    border-top: 1px solid var(--classic-border-light);
+    border-left: 1px solid var(--classic-border-light);
+    border-right: 1px solid var(--classic-border-dark);
+    border-bottom: 1px solid var(--classic-border-dark);
+    box-shadow: 1px 1px 0px var(--classic-border-dark);
+    user-select: none;
+    cursor: default;
+    font-size: 12px; /* Approximate classic font size */
+
+    /* Specific styles for zoom button */
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0; /* Override mac-button padding */
+    /* Positioning and z-index will be handled in TSX */
+  }
+
+  .window-zoom-box {
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--classic-text); /* Outer square */
+    position: relative; /* For the ::after pseudo-element */
+    display: flex; /* To center the inner content if needed */
+    align-items: center;
+    justify-content: center;
+  }
+
+  .window-zoom-box::after { /* Inner square */
+    content: "";
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border: 1px solid var(--classic-text);
+    display: block; /* ensure it takes width/height */
   }
 }
 

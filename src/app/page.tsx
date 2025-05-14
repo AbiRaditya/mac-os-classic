@@ -3,7 +3,8 @@
 import WindowComponent from "@/components/Window";
 import MenuBar from "@/components/MenuBar";
 import React, { useState, useCallback } from "react";
-import Calculator from "@/components/Calculator"; // Added import
+import Calculator from "@/components/Calculator";
+import Image from "next/image";
 
 interface WindowState {
   id: string;
@@ -13,29 +14,11 @@ interface WindowState {
   initialWidth: number;
   initialHeight: number;
   zIndex: number;
-  isResizable?: boolean; // Added optional isResizable property
-  rounded?: boolean; // Added optional rounded property
+  isResizable?: boolean;
+  rounded?: boolean;
 }
 
-const initialWindows: WindowState[] = [
-  // {
-  //   id: "welcome",
-  //   title: "Welcome to Mac OS Classic",
-  //   content: (
-  //     <>
-  //       <p className="mb-2">
-  //         Welcome to this Next.js Mac OS Classic recreation!
-  //       </p>
-  //       <p className="mb-2">You can drag this window by its title bar.</p>
-  //       {/* Button to open another window will be handled by a function */}
-  //     </>
-  //   ),
-  //   initialPosition: { x: 50, y: 30 },
-  //   initialWidth: 380,
-  //   initialHeight: 150,
-  //   zIndex: 2,
-  // },
-];
+const initialWindows: WindowState[] = [];
 
 let windowCounter = 0;
 
@@ -44,8 +27,8 @@ export default function HomePage() {
   const [activeWindowId, setActiveWindowId] = useState<string | null>(
     initialWindows.length > 0 ? initialWindows[0].id : null
   );
-  const [selectedIconId, setSelectedIconId] = useState<string | null>(null); // Added for icon selection
-  const [clickTimeout, setClickTimeout] = useState<NodeJS.Timeout | null>(null); // For double click detection
+  const [selectedIconId, setSelectedIconId] = useState<string | null>(null);
+  const [clickTimeout, setClickTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const bringToFront = useCallback((id: string) => {
     setWindows(
@@ -55,7 +38,7 @@ export default function HomePage() {
             ...win,
             zIndex: win.id === id ? prevWindows.length : win.zIndex,
           }))
-          .sort((a, b) => a.zIndex - b.zIndex) // Re-sort might not be strictly necessary if zIndex is managed well
+          .sort((a, b) => a.zIndex - b.zIndex)
     );
     setActiveWindowId(id);
   }, []);
@@ -74,7 +57,7 @@ export default function HomePage() {
       },
       initialWidth: 300,
       initialHeight: 180,
-      zIndex: windows.length + 1, // Ensure new window is on top
+      zIndex: windows.length + 1,
     };
     setWindows((prevWindows) => [...prevWindows, newWindow]);
     bringToFront(newWindow.id);
@@ -100,11 +83,11 @@ export default function HomePage() {
         x: 150 + windowCounter * 10,
         y: 120 + windowCounter * 10,
       },
-      initialWidth: 215, // Adjusted for calculator size + padding
-      initialHeight: 310, // Adjusted for calculator size + padding + title bar
+      initialWidth: 215,
+      initialHeight: 310,
       zIndex: windows.length + 1,
-      isResizable: false, // Added to disable resizing for calculator
-      rounded: true, // Added to make the calculator window rounded
+      isResizable: false,
+      rounded: true,
     };
     setWindows((prevWindows) => [...prevWindows, newWindow]);
     bringToFront(newWindow.id);
@@ -145,7 +128,6 @@ export default function HomePage() {
     (id: string) => {
       setWindows((prevWindows) => prevWindows.filter((win) => win.id !== id));
       if (activeWindowId === id) {
-        // If the closed window was active, try to set the top-most remaining window as active
         const remainingWindows = windows.filter((win) => win.id !== id);
         if (remainingWindows.length > 0) {
           const topWindow = remainingWindows.reduce((prev, current) =>
@@ -158,7 +140,6 @@ export default function HomePage() {
     [activeWindowId, windows]
   );
 
-  // Add button to welcome window content dynamically
   const welcomeWindowContent = (
     <>
       <p className="mb-2">Welcome to this Next.js Mac OS Classic recreation!</p>
@@ -177,12 +158,10 @@ export default function HomePage() {
     if (menuTitle === "Special" && itemTitle === "Resume") {
       openResumeWindow();
     }
-    // Handle other menu item actions here
   };
 
   const handleIconClick = (iconId: string) => {
     if (clickTimeout) {
-      // Double click
       clearTimeout(clickTimeout);
       setClickTimeout(null);
       if (iconId === "calculator-icon") {
@@ -191,15 +170,12 @@ export default function HomePage() {
       if (iconId === "resume-icon") {
         openResumeWindow();
       }
-      setSelectedIconId(null); // Deselect after opening
+      setSelectedIconId(null);
     } else {
-      // Single click
       setSelectedIconId(iconId);
       const timeout = setTimeout(() => {
-        // If no second click, it's a single click
         setClickTimeout(null);
-        // If you want to deselect on clicking away, you'd handle that here or in a desktop click handler
-      }, 300); // Standard double click timeout
+      }, 300);
       setClickTimeout(timeout);
     }
   };
@@ -209,7 +185,6 @@ export default function HomePage() {
       className="relative w-screen h-screen overflow-hidden pt-[22px]"
       id="desktop"
       onClick={(e) => {
-        // Deselect icon if clicking on the desktop background
         if ((e.target as HTMLElement).id === "desktop") {
           setSelectedIconId(null);
           if (clickTimeout) {
@@ -220,27 +195,24 @@ export default function HomePage() {
       }}
     >
       {" "}
-      {/* Adjusted pt for menu bar height */}
       <MenuBar onMenuItemClick={handleMenuItemClick} />
       {windows.map((win) => (
         <WindowComponent
           key={win.id}
-          title={win.id === activeWindowId ? `■ ${win.title}` : win.title} // Add a square or similar to active window title
+          isFocused={win.id === activeWindowId}
+          title={win.id === activeWindowId ? `■ ${win.title}` : win.title}
           initialPosition={win.initialPosition}
           initialWidth={win.initialWidth}
           initialHeight={win.initialHeight}
           onClose={() => closeWindow(win.id)}
           zIndex={win.zIndex}
           onFocus={() => bringToFront(win.id)}
-          isResizable={win.isResizable !== undefined ? win.isResizable : true} // Pass isResizable prop
-          minWidth={win.title === "Calculator" ? 194 : undefined} // Optional: set minWidth for calc if needed
-          minHeight={win.title === "Calculator" ? 280 : undefined} // Optional: set minHeight for calc if needed
-          rounded={win.rounded} // Pass rounded prop from WindowState
+          isResizable={win.isResizable !== undefined ? win.isResizable : true}
+          rounded={win.rounded}
         >
           {win.id === "welcome" ? welcomeWindowContent : win.content}
         </WindowComponent>
       ))}
-      {/* Calculator Icon */}
       <div
         id="calculator-icon"
         className={`absolute top-10 left-10 flex flex-col items-center cursor-default group ${
@@ -259,9 +231,9 @@ export default function HomePage() {
           }
         }}
         aria-label="Open Calculator"
-        aria-selected={selectedIconId === "calculator-icon"}
+        aria-pressed={selectedIconId === "calculator-icon"}
       >
-        <img src="/file.svg" alt="Calculator Icon" width={32} height={32} />
+        <Image src="/file.svg" alt="Calculator Icon" width={32} height={32} />
         <span
           className={`text-xs mt-1 text-white rounded-sm px-1 group-focus:ring-2 group-focus:ring-blue-500 group-hover:bg-opacity-75 ${
             selectedIconId === "calculator-icon"
@@ -272,7 +244,6 @@ export default function HomePage() {
           Calculator
         </span>
       </div>
-      {/* Resume Icon */}
       <div
         id="resume-icon"
         className={`absolute top-10 left-24 flex flex-col items-center cursor-default group ${
@@ -291,9 +262,9 @@ export default function HomePage() {
           }
         }}
         aria-label="Open Resume"
-        aria-selected={selectedIconId === "resume-icon"}
+        aria-pressed={selectedIconId === "resume-icon"}
       >
-        <img src="/file.svg" alt="Resume Icon" width={32} height={32} />
+        <Image src="/file.svg" alt="Resume Icon" width={32} height={32} />
         <span
           className={`text-xs mt-1 text-white rounded-sm px-1 group-focus:ring-2 group-focus:ring-blue-500 group-hover:bg-opacity-75 ${
             selectedIconId === "resume-icon"

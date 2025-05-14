@@ -42,7 +42,7 @@ const Calculator: React.FC = () => {
       setCurrentValue(inputValue);
     } else if (operator) {
       const result = calculate(currentValue, inputValue, operator);
-      setDisplay(String(parseFloat(result.toFixed(7)))); // Limit precision
+      setDisplay(String(parseFloat(result.toFixed(7))));
       setCurrentValue(result);
     }
 
@@ -64,12 +64,11 @@ const Calculator: React.FC = () => {
         return prevValue * nextValue;
       case "/":
         if (nextValue === 0) {
-          // Handle division by zero: display an error or reset
           setDisplay("Error");
           setCurrentValue(null);
           setOperator(null);
           setWaitingForOperand(true);
-          return 0; // Or throw an error
+          return 0;
         }
         return prevValue / nextValue;
       default:
@@ -80,15 +79,14 @@ const Calculator: React.FC = () => {
   const handleEquals = () => {
     if (currentValue === null || !operator || waitingForOperand) return;
     const inputValue = parseFloat(display);
-    if (display === "Error") return; // Don't calculate if already in error state
+    if (display === "Error") return;
 
     const result = calculate(currentValue, inputValue, operator);
-    if (display === "Error") return; // Check again if calculate resulted in error
+    if (display === "Error") return;
 
     setDisplay(String(parseFloat(result.toFixed(7))));
     setCurrentValue(null);
     setOperator(null);
-    // setWaitingForOperand(true); // Keep false to allow chaining operations on the result
     setWaitingForOperand(false);
   };
 
@@ -99,18 +97,13 @@ const Calculator: React.FC = () => {
     setDisplay(String(currentValueFloat * -1));
   };
 
-  // Classic Mac OS calculator didn't typically have a percent key that worked this way.
-  // Usually it was for tax/discount calculations in conjunction with other operations.
-  // This is a simplified version.
   const inputPercent = () => {
     if (display === "Error") return;
     const currentValueFloat = parseFloat(display);
-    // If there's an operator and a current value, calculate percentage of the current value
     if (operator && currentValue !== null) {
       const percentOfValue = (currentValue * currentValueFloat) / 100;
       setDisplay(String(parseFloat(percentOfValue.toFixed(7))));
     } else {
-      // Otherwise, just convert the display to its percentage (e.g., 50 -> 0.5)
       setDisplay(String(parseFloat((currentValueFloat / 100).toFixed(7))));
     }
     setWaitingForOperand(true);
@@ -120,21 +113,18 @@ const Calculator: React.FC = () => {
     "mac-button text-black bg-white text-lg w-10 h-10 flex items-center justify-center m-0.5 focus:outline-none active:bg-neutral-400 !shadow-[5px_3px_0px_var(--classic-border-dark)]";
   const zeroButtonClass = buttonClass + " w-auto";
   const operatorButtonClass = buttonClass + " bg-white";
-  const functionButtonClass = buttonClass + " bg-white"; // For C, +/-, %
+  const functionButtonClass = buttonClass + " bg-white";
 
   return (
     <div className="bg-[#b4b8dd] p-2 border border-black shadow-md w-full select-none window-content flex-grow overflow-auto">
-      {/* Display */}
       <div className="bg-white text-right h-8 mb-2 p-1 border-2 border-neutral-400 text-xl font-mono overflow-hidden">
         {display}
       </div>
 
-      {/* Buttons */}
       <div className="grid grid-cols-4 gap-0.5">
         <button onClick={clearDisplay} className={`${functionButtonClass}`}>
           C
         </button>{" "}
-        {/* Changed C to AC for All Clear */}
         <button onClick={toggleSign} className={functionButtonClass}>
           +/-
         </button>
