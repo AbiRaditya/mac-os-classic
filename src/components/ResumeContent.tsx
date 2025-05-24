@@ -14,6 +14,17 @@ const ResumeContent: React.FC = () => {
             linkedin.com/in/abi-raditya
           </a>
         </p>
+        <div className="mt-2">
+          <a
+            href="https://object.sys.falaki.cloud/general/Abi_Raditya_Putra_Falaki_Software_Engineer.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            download="Abi_Raditya_Putra_Falaki_Software_Engineer.pdf"
+            className="inline-block bg-gray-200 hover:bg-gray-300 text-black font-geneva py-1 px-3 text-xs border border-gray-400 rounded"
+          >
+            Download Resume
+          </a>
+        </div>
       </header>
 
       <section className="mb-3">

@@ -247,9 +247,39 @@ If issues persist, we might need to revisit the postcss.config.mjs or tailwind.c
     border: 1px solid var(--classic-text);
     display: block; /* ensure it takes width/height */
   }
+
+  .window-is-resizing > div {
+    /* Make direct children (the content wrapper) semi-transparent during resize */
+    opacity: 0.6;
+  }
+
+  /* Optional: Style the Resizable component itself during resize */
+  /*
+  .window-is-resizing {
+    border: 1px dashed rgba(0,0,0,0.4) !important;
+  }
+  */
 }
 
 /* Remove default browser focus outline and use custom if needed */
 *:focus {
   outline: none;
 }
+
+/* Styles for resize behavior */
+.resizable-content-hidden > .window-title-bar,
+.resizable-content-hidden > .window-content-wrapper {
+  opacity: 0 !important;
+}
+
+/* Ensure the main window frame isn't overly transparent if window-is-resizing was used before */
+.window-is-resizing {
+  /* opacity: 1; /* Reset if it was previously set to something else */
+}
+
+
+
+/* Remove or adjust if .window-is-resizing > div was making content transparent before */
+/* .window-is-resizing > div {
+  opacity: 1; 
+} */
