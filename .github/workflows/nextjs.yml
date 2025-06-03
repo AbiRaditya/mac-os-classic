@@ -29,3 +29,9 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/mac-os-classic:latest
+
+      - name: Redeploy via webhook
+        run: |
+          curl -X POST https://automation.sys.falaki.cloud/webhook/redeploy \
+            -H "Content-Type: application/json" \
+            -d '{"secret": "${{ secrets.SECRET }}"}'
