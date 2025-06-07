@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Banintosh",
+  title: "Abi Raditya SWE",
   description: "Mac OS Classic",
 };
 

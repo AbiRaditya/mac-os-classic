@@ -1,285 +1,435 @@
 @import "tailwindcss";
 
-/*
-Previously, there was an @import "tailwindcss"; here.
-It's generally recommended to use the @tailwind directives directly.
-If issues persist, we might need to revisit the postcss.config.mjs or tailwind.config.ts
-*/
-
-@font-face {
-  font-family: "Chicago";
-  src: url("/fonts/Chicago.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Geneva";
-  src: url("/fonts/Geneva.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Monaco";
-  src: url("/fonts/Monaco.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "NewYork";
-  src: url("/fonts/NewYork.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-  /* Classic Mac OS did not have a dark mode, so we'll primarily use light theme values */
-  /* Forcing light theme for now, can be made dynamic later if desired */
-  --classic-bg: #008080; /* Teal desktop */
-  --classic-window-bg: #c0c0c0; /* Classic gray */
-  --classic-window-title-bg: oklch(97% 0 0); /* Very light, almost white title bar */
-  --classic-stripe-color: rgba(0, 0, 0, 0.25); /* Subtle dark stripes for the title bar */
-  --classic-text: #000000;
-  --classic-text-inverted: #ffffff;
-  --classic-border-light: #ffffff;
-  --classic-border-dark: #000000;
-}
+  --foreground: #000000;
 
-/*
- The @theme inline block was causing issues. 
- It might be a feature of a newer Next.js or Tailwind version that's not fully configured.
- For simplicity and to ensure basic styles work, I'm commenting it out.
- We can re-evaluate if specific theming features are needed later.
-*/
-/*
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Windows XP Luna Theme Colors */
+  --xp-desktop-bg: #5c9ccc; /* XP Blue desktop */
+  --xp-window-bg: #ece9d8; /* XP Window background */
+  --xp-title-active: linear-gradient(
+    90deg,
+    #0997dc 0%,
+    #1f4788 100%
+  ); /* Active title bar */
+  --xp-title-inactive: linear-gradient(
+    90deg,
+    #7a96b8 0%,
+    #5c7a96 100%
+  ); /* Inactive title bar */
+  --xp-border-light: #ffffff;
+  --xp-border-dark: #716f64;
+  --xp-border-shadow: #aca899;
+  --xp-text: #000000;
+  --xp-text-white: #ffffff;
+  --xp-button: #ece9d8;
+  --xp-button-hover: #b6bdd2;
+  --xp-button-active: #7a96b8;
+  --xp-taskbar: linear-gradient(180deg, #245edb 0%, #1941a5 50%, #1941a5 100%);
+  --xp-start-button: linear-gradient(180deg, #4eb5f1 0%, #1f6db8 100%);
 }
-*/
-
-/*
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a; 
-    --foreground: #ededed;
-  }
-}
-*/
 
 @layer base {
   body {
-    background-color: var(--classic-bg); /* Teal desktop */
-    color: var(--classic-text);
-    /* Ensure Chicago font is prioritized and add fallbacks */
-    font-family: "Chicago", "Geneva", "Verdana", sans-serif;
-    font-smooth: never; /* Disable anti-aliasing for body */
-    -webkit-font-smoothing: none; /* Disable anti-aliasing for WebKit browsers */
-    -moz-osx-font-smoothing: grayscale; /* Disable anti-aliasing for Firefox on macOS */
-    image-rendering: pixelated; /* For sharp, pixelated icons/images */
-    background-image: url("/images/system-7.png");
-    background-repeat: repeat;
+    background: var(--xp-desktop-bg);
+    color: var(--xp-text);
+    font-family: "Tahoma", "MS Sans Serif", sans-serif;
+    font-size: 11px;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    background-image: radial-gradient(
+        ellipse at top left,
+        rgba(255, 255, 255, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        ellipse at bottom right,
+        rgba(0, 0, 0, 0.1) 0%,
+        transparent 50%
+      );
   }
 
-  /* Basic window styling */
-  .window {
-    background-color: var(--classic-window-bg);
-    border-top: 2px solid var(--classic-border-light);
-    border-left: 2px solid var(--classic-border-light);
-    border-right: 2px solid var(--classic-border-dark);
-    border-bottom: 2px solid var(--classic-border-dark);
-    box-shadow: 2px 2px 0px var(--classic-border-dark);
+  /* Windows XP Window Styling */
+  .xp-window {
+    background: var(--xp-window-bg);
+    border: 1px solid var(--xp-border-dark);
+    border-top: 1px solid var(--xp-border-light);
+    border-left: 1px solid var(--xp-border-light);
+    box-shadow: 1px 1px 0px var(--xp-border-shadow),
+      2px 2px 5px rgba(0, 0, 0, 0.3);
+    font-family: "Tahoma", sans-serif;
+    font-size: 11px;
   }
 
-  .window-title-bar {
-    background-color: var(--classic-window-title-bg); /* Light background for the whole bar */
-    color: var(--classic-text); /* Dark text for items in the bar */
-    padding: 0; /* Remove padding, manage spacing with flex/margins */
+  /* XP Title Bar */
+  .xp-title-bar {
+    height: 22px;
+    background: var(--xp-title-inactive);
+    color: var(--xp-text-white);
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    border-bottom: 1px solid var(--xp-border-dark);
+    cursor: move;
+    user-select: none;
+    font-size: 11px;
     font-weight: bold;
-    display: flex; /* Will be controlled by TSX, but good default */
-    align-items: center; /* Will be controlled by TSX */
-    height: 20px; /* Approximate classic title bar height */
-    cursor: default; /* Default cursor for title bar (draggable handle) */
-    position: relative; /* For stripes and absolute positioned children if any */
   }
 
-  .window-title-bar-stripe {
-    background-image: repeating-linear-gradient(
-      to bottom,
-      transparent,
-      transparent 1px,
-      var(--classic-stripe-color) 1px, /* Use new stripe color */
-      var(--classic-stripe-color) 2px
-    );
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    top: 0;
+  .xp-title-bar.active {
+    background: var(--xp-title-active);
+  }
+
+  .xp-title-text {
+    flex: 1;
+    padding: 0 8px;
+    font-size: 11px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* XP Window Controls */
+  .xp-window-controls {
+    display: flex;
+    gap: 2px;
+  }
+
+  .xp-control-button {
+    width: 21px;
+    height: 19px;
+    border: 1px outset var(--xp-button);
+    background: var(--xp-button);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    user-select: none;
+  }
+
+  .xp-control-button:hover {
+    background: var(--xp-button-hover);
+  }
+
+  .xp-control-button:active {
+    border: 1px inset var(--xp-button);
+    background: var(--xp-button-active);
+  }
+
+  .xp-minimize-btn::after {
+    content: "_";
+    font-size: 14px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .xp-maximize-btn::after {
+    content: "☐";
+    font-size: 12px;
+    line-height: 1;
+  }
+
+  .xp-maximize-btn.restore::after {
+    content: "🗗";
+    font-size: 11px;
+    line-height: 1;
+  }
+
+  .xp-close-btn {
+    background: linear-gradient(180deg, #ff5f52 0%, #e33e32 100%);
+    color: white;
+  }
+
+  .xp-close-btn:hover {
+    background: linear-gradient(180deg, #ff7b73 0%, #ff5f52 100%);
+  }
+
+  .xp-close-btn::after {
+    content: "×";
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1;
+  }
+
+  /* XP Content Area */
+  .xp-content {
+    background: var(--xp-window-bg);
+    padding: 8px;
+    height: calc(100% - 22px);
+    overflow: auto;
+  }
+
+  /* XP Button Styling */
+  .xp-button {
+    background: var(--xp-button);
+    border: 1px outset var(--xp-button);
+    padding: 4px 12px;
+    font-family: "Tahoma", sans-serif;
+    font-size: 11px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .xp-button:hover {
+    background: var(--xp-button-hover);
+  }
+
+  .xp-button:active {
+    border: 1px inset var(--xp-button);
+    background: var(--xp-button-active);
+  }
+
+  /* XP Taskbar */
+  .xp-taskbar {
+    position: fixed;
+    bottom: 0;
     left: 0;
-    pointer-events: none; /* Allow clicks to pass through */
-    z-index: 0; /* Ensure stripes are behind other content in the title bar */
+    right: 0;
+    height: 30px;
+    background: var(--xp-taskbar);
+    border-top: 1px solid #ffffff;
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    z-index: 9999;
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.3);
   }
 
-  .window-title-text {
-    position: relative; /* Ensure text is above the stripes if not using higher z-index from TSX */
-    z-index: 1; /* Default z-index, TSX might use higher like z-10 */
-    color: var(--classic-text); /* Ensure dark text */
-    background-color: transparent; /* No specific background, uses bar's bg */
+  .xp-start-button {
+    height: 24px;
+    background: var(--xp-start-button);
+    border: 1px outset #4eb5f1;
+    border-radius: 3px;
+    color: white;
+    font-family: "Tahoma", sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    user-select: none;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
   }
 
-  .window-close-button {
-    position: relative; /* Will be part of flex layout, not absolute by default in CSS */
-    width: 14px;
-    height: 14px;
+  .xp-start-button:hover {
+    background: linear-gradient(180deg, #6bc7ff 0%, #3f7fbf 100%);
+  }
+
+  .xp-start-button:active {
+    border: 1px inset #4eb5f1;
+    background: linear-gradient(180deg, #3f7fbf 0%, #1f6db8 100%);
+  }
+
+  .xp-taskbar-tasks {
+    flex: 1;
+    display: flex;
+    gap: 2px;
+    margin-left: 8px;
+  }
+
+  .xp-task-button {
+    height: 22px;
+    background: linear-gradient(180deg, #7a96b8 0%, #5c7a96 100%);
+    border: 1px outset #7a96b8;
+    color: white;
+    font-family: "Tahoma", sans-serif;
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    user-select: none;
+    min-width: 100px;
+    max-width: 150px;
+  }
+
+  .xp-task-button.active {
+    background: linear-gradient(180deg, #b6bdd2 0%, #9ca3b4 100%);
+    border: 1px inset #7a96b8;
+    color: var(--xp-text);
+  }
+
+  .xp-task-button:hover:not(.active) {
+    background: linear-gradient(180deg, #8fa7c4 0%, #6b89a6 100%);
+  }
+
+  .xp-task-button.minimized {
+    font-style: italic;
+    opacity: 0.8;
+  }
+
+  .xp-system-tray {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    border-left: 1px solid #ffffff;
+    font-size: 11px;
+    color: white;
+  }
+
+  /* XP Desktop Icons */
+  .xp-desktop-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px;
+    border-radius: 2px;
+    cursor: pointer;
+    user-select: none;
+    width: 64px;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  }
+
+  .xp-desktop-icon:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .xp-desktop-icon.selected {
+    background: rgba(49, 106, 197, 0.8);
+    border: 1px dotted rgba(255, 255, 255, 0.8);
+  }
+
+  .xp-icon-image {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 2px;
+  }
+
+  .xp-icon-label {
+    font-size: 11px;
+    text-align: center;
+    word-wrap: break-word;
+    line-height: 1.2;
+  }
+
+  /* XP Calculator specific styling */
+  .xp-calculator {
+    background: var(--xp-window-bg);
+    padding: 8px;
+    font-family: "MS Sans Serif", sans-serif;
+  }
+
+  .xp-calculator-display {
+    background: white;
+    border: 2px inset var(--xp-window-bg);
+    padding: 4px 8px;
+    text-align: right;
+    font-size: 16px;
+    margin-bottom: 8px;
+    min-height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .xp-calculator-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+  }
+
+  .xp-calc-button {
+    background: var(--xp-button);
+    border: 1px outset var(--xp-button);
+    height: 28px;
+    font-family: "MS Sans Serif", sans-serif;
+    font-size: 11px;
+    cursor: pointer;
+    user-select: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0; /* Override mac-button padding */
   }
 
-  .window-close-box {
-    width: 6px;
-    height: 6px;
-    border: 1px solid var(--classic-text); /* Black border for the box */
+  .xp-calc-button:hover {
+    background: var(--xp-button-hover);
   }
 
-  .window-content {
-    padding: 10px;
-    /* Ensure content area respects title bar height */
-    height: calc(100% - 20px); /* Adjusted to string */
-    overflow: auto; /* Add scrollbars if content overflows */
+  .xp-calc-button:active {
+    border: 1px inset var(--xp-button);
+    background: var(--xp-button-active);
   }
 
-  /* Classic button styling */
-  .mac-button {
-    background-color: var(--classic-window-bg);
-    border-top: 1px solid var(--classic-border-light);
-    border-left: 1px solid var(--classic-border-light);
-    border-right: 1px solid var(--classic-border-dark);
-    border-bottom: 1px solid var(--classic-border-dark);
-    padding: 2px 8px;
-    box-shadow: 1px 1px 0px var(--classic-border-dark);
-    user-select: none;
-    cursor: default;
-    font-size: 12px; /* Approximate classic font size */
+  /* Resize handle for XP windows */
+  .xp-resize-handle {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    cursor: nw-resize;
+    background: var(--xp-window-bg);
   }
 
-  .mac-button:active {
-    background-color: #a0a0a0;
-    border-top: 1px solid var(--classic-border-dark);
-    border-left: 1px solid var(--classic-border-dark);
-    border-right: 1px solid var(--classic-border-light);
-    border-bottom: 1px solid var(--classic-border-light);
-    box-shadow: none;
-    transform: translate(1px, 1px);
-  }
-
-  /* Specific font style for MenuBar to ensure pixelated look if Chicago is not available */
-  .menubar-font {
-    font-family: "Chicago", "Geneva", "Verdana", sans-serif; /* Prioritize Chicago */
-    font-smooth: never;
-    -webkit-font-smoothing: none;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  .selected-icon img {
-    filter: invert(50%) sepia(100%) saturate(2000%) hue-rotate(180deg)
-      brightness(70%) contrast(100%); /* Example selection filter */
-  }
-
-  .selected-icon span {
-    background-color: var(
-      --classic-window-title-bg
-    ) !important; /* Use title bar blue for selected text background */ /* This var is now very light gray */
-    color: var(
-      --classic-text-inverted
-    ) !important; /* White text for selected icon */
-  }
-
-  /* Styles for the new zoom button */
-  .window-zoom-button {
-    /* Copied from .mac-button */
-    background-color: var(--classic-window-bg);
-    border-top: 1px solid var(--classic-border-light);
-    border-left: 1px solid var(--classic-border-light);
-    border-right: 1px solid var(--classic-border-dark);
-    border-bottom: 1px solid var(--classic-border-dark);
-    box-shadow: 1px 1px 0px var(--classic-border-dark);
-    user-select: none;
-    cursor: default;
-    font-size: 12px; /* Approximate classic font size */
-
-    /* Specific styles for zoom button */
-    width: 14px;
-    height: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0; /* Override mac-button padding */
-    /* Positioning and z-index will be handled in TSX */
-  }
-
-  .window-zoom-box {
-    width: 8px;
-    height: 8px;
-    border: 1px solid var(--classic-text); /* Outer square */
-    position: relative; /* For the ::after pseudo-element */
-    display: flex; /* To center the inner content if needed */
-    align-items: center;
-    justify-content: center;
-  }
-
-  .window-zoom-box::after { /* Inner square */
+  .xp-resize-handle::before {
     content: "";
     position: absolute;
-    width: 4px;
-    height: 4px;
-    border: 1px solid var(--classic-text);
-    display: block; /* ensure it takes width/height */
+    bottom: 2px;
+    right: 2px;
+    width: 8px;
+    height: 8px;
+    background-image: linear-gradient(
+        45deg,
+        var(--xp-border-dark) 25%,
+        transparent 25%
+      ),
+      linear-gradient(-45deg, var(--xp-border-dark) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, var(--xp-border-dark) 75%),
+      linear-gradient(-45deg, transparent 75%, var(--xp-border-dark) 75%);
+    background-size: 2px 2px;
+    background-position: 0 0, 0 1px, 1px -1px, -1px 0px;
   }
 
-  .window-is-resizing > div {
-    /* Make direct children (the content wrapper) semi-transparent during resize */
-    opacity: 0.6;
+  /* XP Menu styling */
+  .xp-menu {
+    background: #f1f0e7;
+    border: 1px solid #716f64;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    font-family: "Tahoma", sans-serif;
+    font-size: 11px;
   }
 
-  /* Optional: Style the Resizable component itself during resize */
-  /*
-  .window-is-resizing {
-    border: 1px dashed rgba(0,0,0,0.4) !important;
+  .xp-menuitem {
+    padding: 4px 16px;
+    cursor: pointer;
+    user-select: none;
   }
-  */
+
+  .xp-menuitem:hover {
+    background: #316ac5;
+    color: white;
+  }
+
+  /* XP Notepad specific styling */
+  .xp-notepad {
+    padding: 0;
+    background: var(--xp-window-bg);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .xp-notepad-textarea {
+    width: 100%;
+    height: 100%;
+    border: 2px inset var(--xp-window-bg);
+    background: white;
+    font-family: "Courier New", monospace;
+    font-size: 12px;
+    padding: 4px;
+    resize: none;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .xp-notepad-textarea:focus {
+    border: 2px inset #0000ff;
+  }
 }
-
-/* Remove default browser focus outline and use custom if needed */
-*:focus {
-  outline: none;
-}
-
-/* Styles for resize behavior */
-.resizable-content-hidden > .window-title-bar,
-.resizable-content-hidden > .window-content-wrapper {
-  opacity: 0 !important;
-}
-
-/* Ensure the main window frame isn't overly transparent if window-is-resizing was used before */
-.window-is-resizing {
-  /* opacity: 1; /* Reset if it was previously set to something else */
-}
-
-
-
-/* Remove or adjust if .window-is-resizing > div was making content transparent before */
-/* .window-is-resizing > div {
-  opacity: 1; 
-} */

@@ -1,0 +1,101 @@
+/* Windows XP Window Module Styles */
+
+/* Resize handle styling */
+.resize-handle-bottom-right {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  cursor: nw-resize;
+  background: transparent;
+  border: none;
+  background-image: linear-gradient(
+      45deg,
+      transparent 30%,
+      #666 30%,
+      #666 35%,
+      transparent 35%
+    ),
+    linear-gradient(45deg, transparent 45%, #666 45%, #666 50%, transparent 50%),
+    linear-gradient(45deg, transparent 60%, #666 60%, #666 65%, transparent 65%);
+  background-size: 3px 3px, 4px 4px, 5px 5px;
+  background-position: 0 0, 1px 1px, 2px 2px;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.resize-handle-bottom-right:hover {
+  opacity: 1;
+}
+
+/* Window resizing state */
+.windowIsResizing {
+  user-select: none;
+  pointer-events: none;
+}
+
+.windowIsResizing * {
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Hide content during resize for better performance */
+.resizableContentHidden .window-content-wrapper {
+  visibility: hidden;
+}
+
+.resizableContentHidden .xp-title-bar {
+  visibility: visible;
+}
+
+/* Global resize cursor when resizing */
+body.windowResizingActive,
+body.windowResizingActive * {
+  cursor: nw-resize !important;
+}
+
+/* XP Window borders and effects */
+.windowBorderClassic {
+  border-width: 2px;
+  border-style: solid;
+  border-color: var(--xp-border-light) var(--xp-border-dark)
+    var(--xp-border-dark) var(--xp-border-light);
+}
+
+.windowBorderFocused {
+  border-color: var(--xp-border-light) var(--xp-border-shadow)
+    var(--xp-border-shadow) var(--xp-border-light);
+}
+
+/* Smooth transitions */
+.windowContentWrapper {
+  transition: visibility 0.1s ease;
+}
+
+/* Resize outline effect during resize */
+.windowIsResizing {
+  outline: 1px dashed var(--xp-border-dark);
+  outline-offset: -1px;
+}
+
+/* Maximize animation */
+.windowMaximizing {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Minimize animation */
+.windowMinimizing {
+  animation: minimizeToTaskbar 0.3s ease-in-out;
+}
+
+@keyframes minimizeToTaskbar {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.1) translateY(200px);
+  }
+}
