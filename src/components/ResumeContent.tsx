@@ -58,7 +58,7 @@ const ResumeContent: React.FC = () => {
         </h2>
         <div className="mb-2">
           <h3 className="text-xs font-bold">
-            Senior Engineering Lead, BRIK (Ready-Mix Concrete Startup)
+            BRIK (Ready-Mix Concrete Startup), Senior Engineering Lead
           </h3>
           <p className="text-xs italic">2024 - Present</p>
           <ul className="list-disc list-inside ml-2 text-xs">
@@ -105,7 +105,7 @@ const ResumeContent: React.FC = () => {
         </div>
         <div className="mb-2">
           <h3 className="text-xs font-bold">
-            Fullstack Engineer, BRIK (Ready-Mix Concrete Startup)
+            BRIK (Ready-Mix Concrete Startup), Fullstack Engineer
           </h3>
           <p className="text-xs italic">2022 - 2024</p>
           <ul className="list-disc list-inside ml-2 text-xs">
@@ -150,7 +150,7 @@ const ResumeContent: React.FC = () => {
         </div>
         <div>
           <h3 className="text-xs font-bold">
-            Frontend Developer, Mandaya Hospital Group (Hospital)
+            Mandaya Hospital Group (Hospital), Frontend Developer
           </h3>
           <p className="text-xs italic">2021 - 2022</p>
           <ul className="list-disc list-inside ml-2 text-xs">
@@ -223,8 +223,8 @@ const ResumeContent: React.FC = () => {
           <div>
             <h4 className="font-semibold">DevOps/Cloud:</h4>
             <p>
-              AWS (EC2, S3, ECR, CloudFront, Route 53), Docker Swarm, CircleCI,
-              Traefik
+              AWS (EC2, S3, ECR, CloudFront, Route 53, Cloudwatch, Lambda),
+              Docker Swarm, CircleCI, Traefik
             </p>
           </div>
           <div>
