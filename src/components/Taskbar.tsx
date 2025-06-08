@@ -11,12 +11,14 @@ interface TaskbarProps {
   }>;
   onTaskClick: (id: string) => void;
   onStartClick: () => void;
+  onPowerClick?: () => void;
 }
 
 const Taskbar: React.FC<TaskbarProps> = ({
   openWindows,
   onTaskClick,
   onStartClick,
+  onPowerClick,
 }) => {
   const getCurrentTime = () => {
     return new Date().toLocaleTimeString([], {
@@ -48,6 +50,15 @@ const Taskbar: React.FC<TaskbarProps> = ({
       </div>
 
       <div className="xp-system-tray">
+        {onPowerClick && (
+          <button
+            className="xp-power-button"
+            onClick={onPowerClick}
+            title="Turn Off Computer"
+          >
+            ⚡
+          </button>
+        )}
         <span>{getCurrentTime()}</span>
       </div>
     </div>

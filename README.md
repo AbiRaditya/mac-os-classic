@@ -1,4 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Windows XP Classic Experience in CRT Monitor
+
+This is a Next.js project that recreates the nostalgic Windows XP experience, complete with authentic boot sequence, desktop environment, and shutdown capabilities, all rendered inside a vintage CRT monitor frame.
+
+## ✨ Features
+
+### 🖥️ Authentic Windows XP Experience
+
+- **Boot Screen**: Classic Windows XP boot sequence with typewriter animation
+- **Desktop Environment**: Faithful XP Luna theme with blue gradient background
+- **Taskbar**: Start button, system tray, and running application windows
+- **Applications**: Calculator, Notepad, and Resume viewer
+- **Shutdown System**: Complete shutdown/restart sequence with proper dialogs
+
+### 📺 CRT Monitor Integration
+
+- **Vintage Aesthetic**: Entire interface rendered inside a realistic CRT monitor frame
+- **Screen Effects**: Subtle scanlines, glass reflection, and phosphor glow
+- **Authentic Feel**: Slight screen curvature and flickering effects
+- **Responsive Design**: Adapts to different screen sizes while maintaining aspect ratio
+
+### 🔄 Complete System Lifecycle
+
+1. **Boot Sequence**: Windows XP logo, typewriter text, progress bar
+2. **Desktop**: Fully interactive Windows XP desktop environment
+3. **Shutdown Options**: Power button in taskbar or Start menu access
+4. **Restart Capability**: Cycles back to boot screen for continuous experience
 
 ## Getting Started
 

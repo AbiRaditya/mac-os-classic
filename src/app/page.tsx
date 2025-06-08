@@ -8,6 +8,8 @@ import Taskbar from "@/components/Taskbar";
 import Each from "@/components/Each";
 import ResumeContent from "@/components/ResumeContent";
 import BootScreen from "@/components/BootScreen";
+import ShutdownScreen from "@/components/ShutdownScreen";
+import ShutdownDialog from "@/components/ShutdownDialog";
 
 interface WindowState {
   id: string;
@@ -28,6 +30,11 @@ let windowCounter = 0;
 
 export default function HomePage() {
   const [isBooting, setIsBooting] = useState<boolean>(true);
+  const [isShuttingDown, setIsShuttingDown] = useState<boolean>(false);
+  const [shutdownType, setShutdownType] = useState<"shutdown" | "restart">(
+    "shutdown"
+  );
+  const [showShutdownDialog, setShowShutdownDialog] = useState<boolean>(false);
   const [windows, setWindows] = useState<WindowState[]>(initialWindows);
   const [activeWindowId, setActiveWindowId] = useState<string | null>(
     initialWindows.length > 0 ? initialWindows[0].id : null
@@ -256,12 +263,46 @@ export default function HomePage() {
       case "resume":
         openResumeWindow();
         break;
+      case "shutdown":
+        setShowShutdownDialog(true);
+        break;
     }
   };
 
   const handleBootComplete = () => {
     setIsBooting(false);
   };
+
+  const handleShutdown = () => {
+    setShowShutdownDialog(false);
+    setShutdownType("shutdown");
+    setIsShuttingDown(true);
+  };
+
+  const handleRestart = () => {
+    setShowShutdownDialog(false);
+    setShutdownType("restart");
+    setIsShuttingDown(true);
+  };
+
+  const handleShutdownComplete = () => {
+    if (shutdownType === "restart") {
+      setIsShuttingDown(false);
+      setIsBooting(true);
+    }
+    // For shutdown, we just stay on the shutdown screen
+  };
+
+  const handleShutdownCancel = () => {
+    setShowShutdownDialog(false);
+  };
+
+  // Show shutdown screen if shutting down
+  if (isShuttingDown) {
+    return (
+      <ShutdownScreen type={shutdownType} onComplete={handleShutdownComplete} />
+    );
+  }
 
   // Show boot screen if still booting
   if (isBooting) {
@@ -270,7 +311,7 @@ export default function HomePage() {
 
   return (
     <main
-      className="relative w-screen h-screen overflow-hidden"
+      className="relative w-full h-full overflow-hidden xp-desktop-bg"
       style={{ paddingBottom: "30px" }}
       onClick={(e) => {
         if ((e.target as HTMLElement).closest(".xp-taskbar, .xp-start-menu")) {
@@ -311,46 +352,46 @@ export default function HomePage() {
       />
 
       {/* Desktop Icons */}
-      <div
-        className={`absolute top-4 left-4 xp-desktop-icon ${
-          selectedIconId === "calculator-icon" ? "selected" : ""
-        }`}
-        onClick={(e) => {
-          e.stopPropagation();
-          handleIconClick("calculator-icon");
-        }}
-        onDoubleClick={() => openCalculatorWindow()}
-      >
-        <div className="xp-icon-image">🔢</div>
-        <div className="xp-icon-label">Calculator</div>
-      </div>
-
-      <div
-        className={`absolute top-4 left-20 xp-desktop-icon ${
-          selectedIconId === "notepad-icon" ? "selected" : ""
-        }`}
-        onClick={(e) => {
-          e.stopPropagation();
-          handleIconClick("notepad-icon");
-        }}
-        onDoubleClick={() => openNotepadWindow()}
-      >
-        <div className="xp-icon-image">📝</div>
-        <div className="xp-icon-label">Notepad</div>
-      </div>
-
-      <div
-        className={`absolute top-4 left-36 xp-desktop-icon ${
-          selectedIconId === "resume-icon" ? "selected" : ""
-        }`}
-        onClick={(e) => {
-          e.stopPropagation();
-          handleIconClick("resume-icon");
-        }}
-        onDoubleClick={() => openResumeWindow()}
-      >
-        <div className="xp-icon-image">📄</div>
-        <div className="xp-icon-label">Resume</div>
+      <div className="flex flex-col h-full w-full relative gap-4">
+        <div
+          className={`xp-desktop-icon ${
+            selectedIconId === "calculator-icon" ? "selected" : ""
+          }`}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleIconClick("calculator-icon");
+          }}
+          onDoubleClick={() => openCalculatorWindow()}
+        >
+          <div className="xp-icon-image">🔢</div>
+          <div className="xp-icon-label">Calculator</div>
+        </div>
+        <div
+          className={`xp-desktop-icon ${
+            selectedIconId === "notepad-icon" ? "selected" : ""
+          }`}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleIconClick("notepad-icon");
+          }}
+          onDoubleClick={() => openNotepadWindow()}
+        >
+          <div className="xp-icon-image">📝</div>
+          <div className="xp-icon-label">Notepad</div>
+        </div>
+        <div
+          className={`xp-desktop-icon ${
+            selectedIconId === "resume-icon" ? "selected" : ""
+          }`}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleIconClick("resume-icon");
+          }}
+          onDoubleClick={() => openResumeWindow()}
+        >
+          <div className="xp-icon-image">📄</div>
+          <div className="xp-icon-label">Resume</div>
+        </div>
       </div>
 
       {/* Start Menu */}
@@ -378,10 +419,22 @@ export default function HomePage() {
             📄 Resume
           </div>
           <hr style={{ margin: "4px 0", border: "1px inset #716f64" }} />
-          <div className="xp-menuitem">⚙️ Control Panel</div>
-          <div className="xp-menuitem">🔍 Search</div>
+          <div
+            className="xp-menuitem"
+            onClick={() => handleStartMenuAction("shutdown")}
+          >
+            ⚡ Turn Off Computer
+          </div>
         </div>
       )}
+
+      {/* Shutdown Dialog */}
+      <ShutdownDialog
+        isOpen={showShutdownDialog}
+        onShutdown={handleShutdown}
+        onRestart={handleRestart}
+        onCancel={handleShutdownCancel}
+      />
 
       {/* Taskbar */}
       <Taskbar
@@ -393,6 +446,7 @@ export default function HomePage() {
         }))}
         onTaskClick={handleTaskClick}
         onStartClick={handleStartClick}
+        onPowerClick={() => setShowShutdownDialog(true)}
       />
     </main>
   );
